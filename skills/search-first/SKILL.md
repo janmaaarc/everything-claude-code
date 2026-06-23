@@ -1,8 +1,7 @@
 ---
 name: search-first
 description: Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code. Invokes the researcher agent.
-metadata:
-  origin: ECC
+origin: ECC
 ---
 
 # /search-first — Research Before You Code
@@ -21,10 +20,6 @@ Use this skill when:
 
 ```
 ┌─────────────────────────────────────────────┐
-│  0. TOOL AVAILABILITY PREFLIGHT             │
-│     Check search channels before relying on │
-│     them; report skipped channels honestly   │
-├─────────────────────────────────────────────┤
 │  1. NEED ANALYSIS                           │
 │     Define what functionality is needed      │
 │     Identify language/framework constraints  │
@@ -62,35 +57,21 @@ Use this skill when:
 
 ## How to Use
 
-### Step 0: Tool Availability Preflight
-
-This is agent guidance, not an executable setup script. Check only the channels
-that are relevant to the task and project in front of you.
-
-| Channel | Check | If missing |
-|---------|-------|------------|
-| Repository search | `rg --files` and targeted `rg` queries | State that only visible files were inspected |
-| Package registry | `npm --version`, `python -m pip --version`, or project package manager | Use web/docs search and avoid claiming registry coverage |
-| GitHub CLI | `gh auth status` | Use public web or local git history only |
-| MCP/docs tools | Available tool list or local MCP config | Fall back to official docs/web search |
-| Skills directory | `ls ~/.claude/skills ~/.codex/skills` where applicable | Say no local skill catalog was available |
-
 ### Quick Mode (inline)
 
 Before writing a utility or adding functionality, mentally run through:
 
-0. Does this already exist in the repo? → `rg` through relevant modules/tests first
 1. Is this a common problem? → Search npm/PyPI
 2. Is there an MCP for this? → Check `~/.claude/settings.json` and search
 3. Is there a skill for this? → Check `~/.claude/skills/`
-4. Is there a GitHub implementation/template? → Run GitHub code search for maintained OSS before writing net-new code
+4. Is there a GitHub template? → Search GitHub
 
 ### Full Mode (agent)
 
 For non-trivial functionality, launch the researcher agent:
 
 ```
-Agent(subagent_type="general-purpose", prompt="
+Task(subagent_type="general-purpose", prompt="
   Research existing tools for: [DESCRIPTION]
   Language/framework: [LANG]
   Constraints: [ANY]
@@ -99,9 +80,6 @@ Agent(subagent_type="general-purpose", prompt="
   Return: Structured comparison with recommendation
 ")
 ```
-
-Older Claude Code docs may call this `Task(...)`; use the current agent/subagent
-tool name exposed by the active harness.
 
 ## Search Shortcuts by Category
 
@@ -117,7 +95,7 @@ tool name exposed by the active harness.
 - Document processing → `unstructured`, `pdfplumber`, `mammoth`
 
 ### Data & APIs
-- HTTP clients → `httpx` (Python), `ky`/`undici` (Node)
+- HTTP clients → `httpx` (Python), `ky`/`got` (Node)
 - Validation → `zod` (TS), `pydantic` (Python)
 - Database → Check for MCP servers first
 
@@ -178,6 +156,5 @@ Result: 1 package + 1 schema file, no custom validation logic
 
 - **Jumping to code**: Writing a utility without checking if one exists
 - **Ignoring MCP**: Not checking if an MCP server already provides the capability
-- **Silent skipping**: Reporting "nothing found" when a search channel was unavailable
 - **Over-customizing**: Wrapping a library so heavily it loses its benefits
 - **Dependency bloat**: Installing a massive package for one small feature
